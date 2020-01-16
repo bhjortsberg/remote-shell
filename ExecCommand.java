@@ -17,10 +17,10 @@ public class ExecCommand {
             // Reading output from Process
             BufferedReader reader = new BufferedReader(
                                         new InputStreamReader(command.getInputStream()));
-            // To write data to the Process
+            // Write data to the Process
             OutputStream instream = command.getOutputStream();
             final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(instream));
-            //DataOutputStream outputStream = new DataOutputStream(command.getOutputStream());
+
             Scanner scan = new Scanner(System.in);
 
             Thread thread = new Thread(new Runnable() {
