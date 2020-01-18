@@ -41,14 +41,31 @@ public class RemoteShell {
         }
         return null;
     }
+
+    private static void usage() {
+        System.out.println("Usage:");
+        System.out.println("\tRemoteShell <port> <command>\n");
+        System.out.println("\tport:\t\tListen port");
+        System.out.println("\tcommand:\tCommand to execute when client");
+        System.out.println("\t\t\tconnect, default: bash\n");
+    }
+
     public static void main(String []args) {
+        if (args.length < 1) {
+            usage();
+            return;
+        }
+        String commandStr = "bash";
+        if (args.length > 1) {
+            commandStr = args[1];
+        }
+
         Socket socket = startServer(Integer.parseInt(args[0]));
         // Read from client
         InputStream input = inputStream(socket);
         // Write output to client
         OutputStream output = outputStream(socket);
 
-        String commandStr = args[1];
         try{
             Process command = Runtime.getRuntime().exec(commandStr);
             // Reading output from Process
