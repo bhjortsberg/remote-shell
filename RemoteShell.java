@@ -11,18 +11,45 @@ import java.net.Socket;
 
 public class RemoteShell {
 
-    public static Socket startServer(int port) {
+    private int port;
+    private String commandStr = "bash";
+    private Socket socket;
+
+    public RemoteShell(String [] args) {
+        if (args.length < 1) {
+            usage();
+            System.exit(1);;
+        }
+        if (args.length > 1) {
+            commandStr = args[1];
+        }
+        try {
+            port = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid port: " + args[0]);
+            usage();
+            System.exit(1);;
+        }
+    }
+
+    private void usage() {
+        System.out.println("Usage:");
+        System.out.println("\tRemoteShell <port> <command>\n");
+        System.out.println("\tport:\t\tListen port");
+        System.out.println("\tcommand:\tCommand to execute when client");
+        System.out.println("\t\t\tconnect, default: bash\n");
+    }
+
+    public void startServer() {
         try {
             ServerSocket server = new ServerSocket(port);
-            Socket socket = server.accept();
-            return socket;
+            socket = server.accept();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
     }
 
-    public static InputStream inputStream(Socket socket) {
+    public InputStream inputStream() {
         try {
             InputStream input = socket.getInputStream();
             return input;
@@ -32,7 +59,7 @@ public class RemoteShell {
         return null;
     }
 
-    public static OutputStream outputStream(Socket socket) {
+    public OutputStream outputStream() {
         try {
             OutputStream output = socket.getOutputStream();
             return output;
@@ -42,40 +69,22 @@ public class RemoteShell {
         return null;
     }
 
-    private static void usage() {
-        System.out.println("Usage:");
-        System.out.println("\tRemoteShell <port> <command>\n");
-        System.out.println("\tport:\t\tListen port");
-        System.out.println("\tcommand:\tCommand to execute when client");
-        System.out.println("\t\t\tconnect, default: bash\n");
+    public String getCommand() {
+        return commandStr;
     }
 
     public static void main(String []args) {
-        if (args.length < 1) {
-            usage();
-            return;
-        }
-        String commandStr = "bash";
-        if (args.length > 1) {
-            commandStr = args[1];
-        }
-        int port;
-        try {
-            port = Integer.parseInt(args[0]);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid port: " + args[0]);
-            usage();
-            return;
-        }
 
-        Socket socket = startServer(port);
+        RemoteShell shell = new RemoteShell(args);
+        shell.startServer();
+
         // Read from client
-        InputStream input = inputStream(socket);
+        InputStream input = shell.inputStream();
         // Write output to client
-        OutputStream output = outputStream(socket);
+        OutputStream output = shell.outputStream();
 
         try{
-            Process command = Runtime.getRuntime().exec(commandStr);
+            Process command = Runtime.getRuntime().exec(shell.getCommand());
             // Reading output from Process
             BufferedReader reader = new BufferedReader(
                                         new InputStreamReader(command.getInputStream()));
