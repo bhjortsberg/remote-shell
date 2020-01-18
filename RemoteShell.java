@@ -68,7 +68,7 @@ public class RemoteShell {
             return;
         }
 
-        Socket socket = startServer(Integer.parseInt(args[0]));
+        Socket socket = startServer(port);
         // Read from client
         InputStream input = inputStream(socket);
         // Write output to client
