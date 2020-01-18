@@ -59,6 +59,14 @@ public class RemoteShell {
         if (args.length > 1) {
             commandStr = args[1];
         }
+        int port;
+        try {
+            port = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid port: " + args[0]);
+            usage();
+            return;
+        }
 
         Socket socket = startServer(Integer.parseInt(args[0]));
         // Read from client
