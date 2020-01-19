@@ -19,12 +19,12 @@ run commands on the host.
 
 ## Example usage
 
-Start the remote shell listening on port 333 and send the output of `uptime`
+Start the remote shell listening on port 3333 and send the output of `uptime`
 to a connected client
 
     $ java RemoteShell 3333 uptime
 
-Connect with a client
+Connect with a client (using netcat):
 
     $ netcat localhost 3333
      22:26:30 up 9 days, 14:31,  1 user,  load average: 1.07, 1.03, 1.09
@@ -58,4 +58,8 @@ Connect with a client and type some commands:
     exit
 
     $
+
+# Documentation
+
+There is a code walk-through [here](https://hjortsberg.org/notes/Writing-a-remote-shell-in-Java.html)
 
